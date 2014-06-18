@@ -40,8 +40,8 @@ config :public_key, default: "XYZ123"
 You can adjust the value from the environment and typecast it or perform additional validation by passing a block to `config`:
 
 ```ruby
-config(:admin) { |admin| 
-  admin ? true : false 
+config(:admin) { |admin|
+  admin ? true : false
 }
 ```
 

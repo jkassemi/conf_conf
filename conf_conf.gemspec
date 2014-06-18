@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name             = "conf_conf"
   s.version          = "1.0.2"
   s.licenses         = ["MIT"]
-  s.authors          = ["James Kassemi"] 
+  s.authors          = ["James Kassemi"]
   s.email            = ["jkassemi@gmail.com"]
   s.homepage         = "https://github.com/jkassemi/conf_conf"
   s.description      = "Verify correctness of environment variables"
