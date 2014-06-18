@@ -1,12 +1,17 @@
+require 'ostruct'
+
 Dir["tasks/**/*.rake"].each { |ext| load ext } if defined?(Rake)
 
 module ConfConf
   class MissingConfigurationValueError < StandardError; end;
 
   class << self
+    def configuration(&block)
+      OpenStruct.new(Configuration.new(&block).parsed_values)
+    end
+
     def rails_configuration(&block)
       configuration = Configuration.new
-
       configuration.run(block)
 
       configuration.parsed_values.each do |key, value|
@@ -18,8 +23,9 @@ module ConfConf
   class Configuration
     attr_reader :parsed_values
 
-    def initialize
+    def initialize(&block)
       @parsed_values = {}
+      run(block) if block
     end
 
     def run(block)
