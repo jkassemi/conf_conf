@@ -1,18 +1,24 @@
 # ConfConf
 
-ConfConf is a pattern and utility for verifying the
-correctness of the environment variables at application boot so
-you can fail fast when there's a configuration problem.
 
-## Installation
+A pattern and utility for verifying the correctness of  
+environment variables at application boot so you can fail 
+fast when there's a configuration problem.
 
-Add `gem 'conf_conf'` to your application's Gemfile.
 
-## Usage
+## Add ConfConf to your Rails/Ruby Project
 
-Add a new initializer - if you use conf_conf.rb , as a matter of 
-convention you shouldn't add ConfConf configuration blocks to
-other initializers.
+
+Add `gem 'conf_conf'` to your application's Gemfile and `bundle install`
+
+Better yet, go to [rubygems][https://rubygems.org/gems/conf_conf]
+and configure a specific version requirement.
+
+
+## Usage (Rails)
+
+Add a new initializer with your ConfConf configuration block:
+
 
 ```ruby
 # config/initializers/conf_conf.rb
@@ -22,18 +28,9 @@ $configuration = ConfConf.configuration do
 end
 ```
 
-In the case above, if SECRET_KEY is not present, then
-`ConfConf::MissingConfigurationValueError` is raised:
 
-```
-  $ bin/rails s
-  ...
-  Exiting
-  conf_conf/lib/conf_conf.rb:50:in `default_value': Please set SECRET_KEY or supply a default value
-(ConfConf::MissingConfigurationValueError)
-    from conf_conf/lib/conf_conf.rb:42
-    ...
-```
+In the case above, if SECRET_KEY is not present, then the above code 
+raises `ConfConf::MissingConfigurationValueError` 
 
 ### Default Values
 
@@ -67,7 +64,7 @@ config :public_key, from: "PUBLIC_KEY_WITH_ALT_NAME"
 
 ## Rails.configuration
 
-To assign directly to Rails.configuration instead of CONFCONF, you can
+To assign directly to Rails.configuration instead of $configuration, you can
 use `ConfConf.rails_configuration` method.
 
 ```ruby
