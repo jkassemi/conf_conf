@@ -23,6 +23,15 @@ describe ConfConf do
     end
   end
 
+  it "sets value from specified environment key" do
+    ENV["TEST_KEY"] = "hey"
+    expect(configuration).to receive(:other_key=).with("hey")
+
+    ConfConf.rails_configuration do
+      config :other_key, from: "TEST_KEY"
+    end
+  end
+
   it "throws an exception when required key not present" do
     expect {
       ConfConf.rails_configuration do
