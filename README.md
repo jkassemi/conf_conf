@@ -11,7 +11,7 @@ fast when there's a configuration problem.
 
 Add `gem 'conf_conf'` to your application's Gemfile and `bundle install`
 
-Better yet, go to [https://rubygems.org/gems/conf_conf]
+Better yet, go to https://rubygems.org/gems/conf_conf
 and configure a specific version requirement.
 
 
