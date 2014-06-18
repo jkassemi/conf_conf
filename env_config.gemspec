@@ -3,7 +3,7 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  spec.name             = "env-config"
+  spec.name             = "env_config"
   spec.version          = "1.0.0"
   spec.authors          = ["James Kassemi"] 
   spec.email            = ["jkassemi@gmail.com"]
