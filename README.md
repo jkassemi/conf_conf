@@ -17,7 +17,7 @@ to other initializers.
 
 ```ruby
 # config/initializers/env_config.rb
-EnvConfig.rails do
+EnvConfig.rails_configuration do
   # Sets Rails.configuration.secret_key, app fails to boot if not present
   config :secret_key
 
