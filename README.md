@@ -30,6 +30,9 @@ ConfConf.rails_configuration do
 
   # Sets Rails.configuration.admin to a boolean value of true or false, app fails to boot if not present
   config :admin, { |admin| admin ? true : false } 
+
+  # Sets Rails.configuration.public_key from ENV["PUBLIC_KEY_WITH_ALT_NAME"]
+  config :public_key, from: "PUBLIC_KEY_WITH_ALT_NAME"
 end
 ```
 

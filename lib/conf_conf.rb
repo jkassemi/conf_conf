@@ -56,7 +56,7 @@ module ConfConf
     end
 
     def environment_key
-      key.to_s.upcase
+      options[:from] || key.to_s.upcase
     end
   end
 end
