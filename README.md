@@ -15,7 +15,7 @@ Better yet, go to https://rubygems.org/gems/conf_conf
 and configure a specific version requirement.
 
 
-## Usage (Rails)
+## Usage
 
 Add a new initializer with your ConfConf configuration block:
 
