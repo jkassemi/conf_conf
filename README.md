@@ -1,13 +1,8 @@
 # ConfConf
 
-Twelve factor applications pull configuration values from the 
-environment. These variables should be verified at application
-boot to prevent exceptions and unexpected behavior during
-run time.
-
-ConfConf is a simple pattern and utility for verifying the
+ConfConf is a pattern and utility for verifying the
 correctness of the environment variables at application boot so
-we can fail fast when there's a configuration problem.
+you can fail fast when there's a configuration problem.
 
 ## Installation
 
