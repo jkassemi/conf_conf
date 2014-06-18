@@ -6,6 +6,8 @@ module ConfConf
   class MissingConfigurationValueError < StandardError; end;
 
   class << self
+    attr_accessor :log_config
+
     def configuration(&block)
       OpenStruct.new(Configuration.new(&block).parsed_values)
     end
@@ -17,6 +19,8 @@ module ConfConf
       configuration.parsed_values.each do |key, value|
         Rails.configuration.send("#{key}=", value)
       end
+
+      ConfigLogger.new.dump_config configuration if log_config
     end
   end
 
@@ -46,7 +50,7 @@ module ConfConf
   class Reference < Struct.new(:key, :options)
     def value
       environment_value || default_value
-    end 
+    end
 
     private
     def default_value
@@ -63,6 +67,16 @@ module ConfConf
 
     def environment_key
       options[:from] || key.to_s.upcase
+    end
+  end
+
+  class ConfigLogger
+    def dump_config(configuration)
+      Rails.logger.info "Application Configuration\n\n#{format(configuration)}"
+    end
+
+    def format(configuration)
+      configuration.parsed_values.collect { |pair| "#{pair[0]}: #{pair[1]}" }.join("\n")
     end
   end
 end
