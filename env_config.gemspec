@@ -2,14 +2,16 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-Gem::Specification.new do |spec|
-  spec.name             = "env_config"
-  spec.version          = "1.0.0"
-  spec.authors          = ["James Kassemi"] 
-  spec.email            = ["jkassemi@gmail.com"]
-  spec.description      = "ENV settings management"
-  spec.summary          = "Require settings from ENV"
-  spec.files            = `git ls-files`.split($/)
+Gem::Specification.new do |s|
+  s.name             = "env_config"
+  s.version          = "1.0.0"
+  s.licenses         = ["MIT"]
+  s.authors          = ["James Kassemi"] 
+  s.email            = ["jkassemi@gmail.com"]
+  s.homepage         = "https://github.com/jkassemi/env_config"
+  s.description      = "Verify correctness of environment variables"
+  s.summary          = "A simple pattern and utility for verifying the correctness of the environment variables at application boot so we can fail fast when there's a configuration problem."
+  s.files            = `git ls-files`.split($/)
 
-  spec.add_development_dependency 'rspec', '~> 3.0.0'
+  s.add_development_dependency 'rspec', '~> 3.0'
 end
