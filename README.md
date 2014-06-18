@@ -25,10 +25,10 @@ ConfConf.rails_configuration do
   # Sets Rails.configuration.secret_key, app fails to boot if not present
   config :secret_key
 
-  # Sets Rails.configuration.public_key from ENV["public_key"], or uses the default if not available in ENV
+  # Sets Rails.configuration.public_key from ENV["PUBLIC_KEY"], or uses the default if not available in ENV
   config :public_key, default: "XYZ123"
 
-  # Sets Rails.configuration.admin to a boolean value of true or false, app fails to boot if not present
+  # Sets Rails.configuration.admin to a boolean value of true or false based on truthiness of ENV key, app fails to boot if not present
   config :admin, { |admin| admin ? true : false } 
 
   # Sets Rails.configuration.public_key from ENV["PUBLIC_KEY_WITH_ALT_NAME"]
