@@ -1,68 +1,77 @@
+require 'multi_json'
 require 'ostruct'
 
-Dir["tasks/**/*.rake"].each { |ext| load ext } if defined?(Rake)
+require 'conf_conf/project'
+require 'conf_conf/configuration'
+require 'conf_conf/project/developer'
+require 'conf_conf/project/developers'
+require 'conf_conf/project/environment'
+require 'conf_conf/project/environment/storage'
+require 'conf_conf/project/environments'
 
 module ConfConf
+  VERSION = '2.0.2'
+
   class MissingConfigurationValueError < StandardError; end;
+  class InconsistentConfigurationError < StandardError
+    attr_reader :inconsistencies
+
+    def initialize(inconsistencies)
+      @inconsistencies = inconsistencies
+    end
+  end
 
   class << self
-    def configuration(&block)
-      OpenStruct.new(Configuration.new(&block).parsed_values)
+    #TODO: This could be cleaned up considerably.
+    def configuration(environment_name=nil, &block)
+      if environment_name
+        # Load ENV
+        project         = ConfConf::Project.new
+        environment     = project.environments[environment_name]
+
+        environment.variables.each do |name, value|
+          ENV[name] = value
+        end
+      end
+
+      # Run configuration block, if given
+      configuration = ConfConf::Configuration.new
+
+      if block
+        configuration.run(block)
+        references      = configuration.references
+      else
+        references      = {}
+      end
+
+      if environment_name
+        # Find references to variables that aren't defaulted here
+        inconsistencies = project.inconsistencies(environment)
+
+        inconsistencies.each do |inconsistency|
+          if references[inconsistency] && references[inconsistency].default_value?
+            inconsistencies.delete(inconsistency)
+          end
+        end
+
+        if inconsistencies.length > 0
+          raise ConfConf::InconsistentConfigurationError.new(inconsistencies)
+        end
+      end
+
+      OpenStruct.new(configuration.parsed_values)
     end
 
-    def rails_configuration(&block)
-      configuration = Configuration.new
-      configuration.run(block)
+    def rails_configuration(environment_name=nil, &block)
+      configuration = configuration(environment_name, block)
 
-      configuration.parsed_values.each do |key, value|
+      configuration.parsed_values.each do |name, value|
         Rails.configuration.send("#{key}=", value)
       end
     end
-  end
 
-  class Configuration
-    attr_reader :parsed_values
-
-    def initialize(&block)
-      @parsed_values = {}
-      run(block) if block
-    end
-
-    def run(block)
-      instance_eval(&block)
-    end
-
-    def config(key, options={})
-      value = Reference.new(key, options).value
-
-      if block_given?
-        value = yield(value)
-      end
-
-      @parsed_values[key] = value
-    end
-  end
-
-  class Reference < Struct.new(:key, :options)
-    def value
-      environment_value || default_value
-    end 
-
-    private
-    def default_value
-      if options.has_key? :default
-        options[:default]
-      else
-        raise MissingConfigurationValueError.new("Please set #{environment_key} or supply a default value")
-      end
-    end
-
-    def environment_value
-      ENV[environment_key]
-    end
-
-    def environment_key
-      options[:from] || key.to_s.upcase
+    def load(environment_name)
+      configuration(environment_name)
     end
   end
 end

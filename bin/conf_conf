@@ -1,0 +1,136 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
+
+require 'rubygems'
+require 'thor'
+require 'highline/import'
+require 'fileutils'
+require 'conf_conf'
+
+##
+# Domain Language:
+#   Instance                    A running version of the Project with its own Environment
+#   Environment                 A set of Environment Variables
+#   Environment Name            The name of an Environment (production/development/staging,etc)
+#   Environment Variable        A combination of a Config Key and a config Value
+#   Variable Name               The name of an Environment Variable
+#   Variable Value              The value of an Environment Variable
+#   Project                     An application that can can run under multiple Environments
+#
+# State Files:
+#   User Key                    Keypair for the current system user
+#   User Key File               ~/.conf_conf.json
+#
+#     {
+#       public_key: '',
+#       private_key: ''
+#     }
+#
+#   Config Directory            ./config/conf_conf
+#
+#   Developer Keys              ./config/conf_conf/developers.json
+#     [<public_key1>, <public_key2>, <public_key3>]
+#
+#   Environment Config File     ./config/conf_conf/environments/#{environment}.json
+#     {
+#       author_public_key: { author_pretty_public_key },
+#
+#       encrypted_environment_secret_key: {
+#         public_key1: encrypted(environment_secret_key),
+#         public_key2: encrypted(environment_secret_key),
+#         public_key3: encrypted(environment_secret_key)
+#       },
+#
+#       schema: {
+#         'RAILS_ENV':    { access: [<public_key1>,<public_key2>,<public_key3>,<public_key5>] },
+#         'SUPER_SECRET': { access: [<public_key1>,<public_key2>,<public_key3>] }
+#       },
+#
+#       encrypted_environment: encrypted(environment, with: environment_secret_key)
+#     }
+#
+#     ConfConf::Developer
+#       #public_key
+#       #secret_key
+#       #pretty_public_key
+#       .current
+#
+#     ConfConf::Project
+#       - developers   => [ConfConf::developer,...]
+#       - environments => ConfConf::Project::environments
+#
+#     ConfConf::Project::Developers
+#       - new(project)      => ConfConf::Project::developers
+#       - add(developer)    => ConfConf::Project::developer
+#       - remove(developer) => ConfConf::Project::developer
+#
+#     ConfConf::Project::Environments
+#       - length
+#       - [](name)
+#
+#     ConfConf::Project::Environment
+#       - new(project, name, variables)
+#       - set(variable_name, variable_value)
+#       - get(variable_name)
+#       - remove(variable_name)
+#       - variables => Hash
+#       - save
+#
+#  System:
+#
+#   Securely stores Environment Variables for each Environment, encrypted with multi-user
+#   access.
+#
+#   Each Developer is a User on their development system. This User has a public key and
+#   a private key.
+#
+#   When an environment is changed:
+#     1) Choose a random Secret Key, K
+#     2) Encrypt the key for all Developers with access to the Project.
+#     3) Store a map of Developer Keys to the Encrypted Secret Key in the Secret Key File
+#     4) Encrypt the changed environment, store or replace it in the Environments File
+#
+#   When an environment is loaded:
+#     1) Find the Encrypted Key from the Secret Key File with User Public Key
+#     2) Decrypt the Encrypted Secret Key to get the Secret Key
+#     3) Decrypt the environment file with the Secret Key
+#
+# Features:
+#   1) Initialize conf_conf for the Project
+#     $ conf_conf init
+#
+#   2) Configure Environments
+#     $ conf_conf env add production development staging
+#     $ conf_conf env remove production
+#
+#   3) Defining Config Values
+#     $ conf_conf set RAILS_ADMIN=true
+#     $ conf_conf set --env=production PRIVATE_KEY=xyz
+#     $ conf_conf set --env=development PRIVATE_KEY=xyz
+#     $ conf_conf remove --env=production RAILS_ADMIN
+#
+#   4) Checking Environment for consistency with all environments
+#     $ conf_conf check
+#        [ERROR]: RAILS_ADMIN not set in production.
+#          > Run `conf_conf set --env=production RAILS_ADMIN=X` to set it
+#        [WARN]: RAILS_SESSION_SECRET not changed since revoking XYZ's access
+
+#   5) Developers
+#     Print current key
+#     $ conf_conf key
+#
+#     Permit the key
+#     $ conf_conf permit <key>
+#
+#     Revoke the key
+#     $ conf_conf revoke <key>
+#
+#   6) Loading Environments
+#     $ conf_conf dump development > .env
+#
+# conf_conf/capistrano provides utilities to check for configuration
+# errors prior to deployment.
+
+require 'conf_conf/cli'
+ConfConf::CLI::Root.start(ARGV)
