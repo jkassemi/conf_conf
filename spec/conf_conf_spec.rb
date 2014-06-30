@@ -8,7 +8,7 @@ describe ConfConf do
       ENV["TEST_KEY"] = "hey"
 
       configuration = ConfConf.configuration {
-        config :test_key 
+        config :test_key
       }
 
       expect(configuration.test_key).to eq("hey")
@@ -57,6 +57,37 @@ describe ConfConf do
       ENV["INTEGER_VALUE"] = "2"
 
       expect(configuration).to receive(:integer_value=).with(2)
+
+      ConfConf.rails_configuration do
+        config :integer_value do |value|
+          value.to_i
+        end
+      end
+    end
+
+    it "logs the configuration if told to" do
+      logger = double()
+      allow(logger).to receive(:info)
+      allow(Rails).to receive(:logger).and_return logger
+      expect(configuration).to receive(:integer_value=).with(2)
+
+      ConfConf.log_config = true
+
+      ConfConf.rails_configuration do
+        config :integer_value do |value|
+          value.to_i
+        end
+      end
+    end
+
+    it "logs the configuration if told to" do
+      logger = double()
+      expect(logger).to receive(:info)
+      expect(Rails).to receive(:logger).and_return logger
+      expect(configuration).to receive(:integer_value=).with(2)
+
+
+      ConfConf.log_config = true
 
       ConfConf.rails_configuration do
         config :integer_value do |value|
