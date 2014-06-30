@@ -82,8 +82,8 @@ describe ConfConf do
 
     it "logs the configuration if told to" do
       logger = double()
-      allow(logger).to receive(:info)
-      allow(Rails).to receive(:logger).and_return logger
+      expect(logger).to receive(:info)
+      expect(Rails).to receive(:logger).and_return logger
       expect(configuration).to receive(:integer_value=).with(2)
 
 
