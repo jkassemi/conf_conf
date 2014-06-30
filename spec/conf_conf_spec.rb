@@ -79,20 +79,20 @@ describe ConfConf do
         end
       end
     end
-  end
 
-  it "logs the configuration if told to" do
-    logger = double()
-    allow(logger).to receive(:info)
-    allow(Rails).to receive(:logger).and_return logger
-    expect(configuration).to receive(:integer_value=).with(2)
+    it "logs the configuration if told to" do
+      logger = double()
+      allow(logger).to receive(:info)
+      allow(Rails).to receive(:logger).and_return logger
+      expect(configuration).to receive(:integer_value=).with(2)
 
 
-    ConfConf.log_config = true
+      ConfConf.log_config = true
 
-    ConfConf.rails_configuration do
-      config :integer_value do |value|
-        value.to_i
+      ConfConf.rails_configuration do
+        config :integer_value do |value|
+          value.to_i
+        end
       end
     end
   end
