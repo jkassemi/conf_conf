@@ -1,6 +1,9 @@
 require 'multi_json'
 require 'ostruct'
 
+require 'rbnacl/libsodium'
+require 'rbnacl'
+
 require 'conf_conf/project'
 require 'conf_conf/configuration'
 require 'conf_conf/project/developer'
@@ -10,7 +13,7 @@ require 'conf_conf/project/environment/storage'
 require 'conf_conf/project/environments'
 
 module ConfConf
-  VERSION = '2.0.2'
+  VERSION = '2.0.3'
 
   class MissingConfigurationValueError < StandardError; end;
   class InconsistentConfigurationError < StandardError

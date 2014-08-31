@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = 'conf_conf'
-  s.version     = '2.0.2'
+  s.version     = '2.0.3'
   s.licenses    = ['MIT']
   s.authors     = ['James Kassemi']
   s.email       = ['jkassemi@gmail.com']

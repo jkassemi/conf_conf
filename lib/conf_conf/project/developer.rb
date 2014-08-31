@@ -1,4 +1,4 @@
-require 'rbnacl'
+require 'rbnacl/libsodium'
 require 'base64'
 
 module ConfConf
