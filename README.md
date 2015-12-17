@@ -1,5 +1,7 @@
 # ConfConf
 
+*Proof of Concept Alpha - this project may not be production ready*
+
 Securely store, manage, and verify availability of environment variables for your
 application over multiple environments.
 
